@@ -1,13 +1,15 @@
 package form;
 
-import dao.CountryDAO;
+import dao.CityDAO;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
-import model.Country;
+import model.City;
 import util.ConnectionJDBC;
 
 /**
@@ -17,13 +19,13 @@ import util.ConnectionJDBC;
 public class CityForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form CountryForm
+     * Creates new form CityForm
      */
     public CityForm() {
         initComponents();
         table.setDefaultEditor(Object.class, null);
         try {
-            countryDAO = new CountryDAO();
+            cityDAO = new CityDAO();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -40,8 +42,8 @@ public class CityForm extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        iID = new javax.swing.JTextField();
-        iName = new javax.swing.JTextField();
+        icID = new javax.swing.JTextField();
+        icCity = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         bNovo = new javax.swing.JButton();
@@ -62,16 +64,16 @@ public class CityForm extends javax.swing.JFrame {
 
         jLabel2.setText("NAME:");
 
-        iID.setEnabled(false);
-        iID.addActionListener(new java.awt.event.ActionListener() {
+        icID.setEnabled(false);
+        icID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                iIDActionPerformed(evt);
+                icIDActionPerformed(evt);
             }
         });
 
-        iName.addActionListener(new java.awt.event.ActionListener() {
+        icCity.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                iNameActionPerformed(evt);
+                icCityActionPerformed(evt);
             }
         });
 
@@ -123,6 +125,11 @@ public class CityForm extends javax.swing.JFrame {
         });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("COUNTRY:");
 
@@ -132,50 +139,51 @@ public class CityForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(iID, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(DisplayMode, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(iName, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(icID, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(icCity, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(DisplayMode, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bRemover))))
+                            .addComponent(bRemover)
+                            .addComponent(bNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DisplayMode, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(iID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3))
-                    .addComponent(bNovo)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(icID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bNovo))
+                .addGap(7, 7, 7)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(iName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(icCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(bSalvar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bRemover)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bRemover)
+                    .addComponent(DisplayMode, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -184,33 +192,34 @@ public class CityForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void iIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iIDActionPerformed
+    private void icIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_icIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_iIDActionPerformed
+    }//GEN-LAST:event_icIDActionPerformed
 
-    private void iNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iNameActionPerformed
+    private void icCityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_icCityActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_iNameActionPerformed
+    }//GEN-LAST:event_icCityActionPerformed
 
     private void bNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNovoActionPerformed
         limpaCampo();
     }//GEN-LAST:event_bNovoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        loadComboBox();
         loadTable();
         DisplayMode();
     }//GEN-LAST:event_formWindowOpened
 
     private void bSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSalvarActionPerformed
-        Country country = criaCountry();
+        City city = criaCity();
         
         try {
             if (mode.equals(INS)) {
-            countryDAO.save(country);
+            cityDAO.save(city);
             } else if (mode.equals(UPD)) {
-                countryDAO.update(country);
+                cityDAO.update(city);
             }
-        } catch (Exception ex) {
+        } catch (Exception ex) {    
             System.out.println(ex.getMessage());
         }
         loadTable();
@@ -220,8 +229,8 @@ public class CityForm extends javax.swing.JFrame {
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         int linha = table.getSelectedRow();
-        iID.setText(""+model.getValueAt(linha, 0 ));
-        iName.setText(""+model.getValueAt(linha, 1 ));
+        icID.setText(""+model.getValueAt(linha, 0 ));
+        icCity.setText(""+model.getValueAt(linha, 1 ));
         
         mode = UPD;
         DisplayMode();
@@ -229,20 +238,34 @@ public class CityForm extends javax.swing.JFrame {
 
     private void bRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRemoverActionPerformed
         try {
-            countryDAO.delete(criaCountry());
+            cityDAO.delete(criaCity());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         loadTable();
     }//GEN-LAST:event_bRemoverActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+    
+    private void loadComboBox() {
+        try {
+            //programar a busca dos dados
+            DefaultComboBoxModel model = new DefaultComboBoxModel(new Vector(cityDAO.findAll()));
+            jComboBox1.setModel(model);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     
     public void loadTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         //Limpar tabela
         model.setNumRows(0);
         try {
-            for (Country country : countryDAO.findAll()) {
-                String linha[] = {"" + country.getCountry_id(), country.getCountry(), country.getLast_update().toString()};
+            for (City city : cityDAO.findAll()) {
+                String linha[] = {"" + city.getCity_id(), city.getCity(), city.getCountry().getCountry(), city.getLast_update().toString()};
                 model.addRow(linha);
             }
         } catch (Exception ex){
@@ -251,8 +274,8 @@ public class CityForm extends javax.swing.JFrame {
     }
     
     public void limpaCampo() {
-        iID.setText("");
-        iName.setText("");
+        icID.setText("");
+        icCity.setText("");
         
         if (table.getSelectedRow() !=-1) {
             table.clearSelection();
@@ -274,12 +297,12 @@ public class CityForm extends javax.swing.JFrame {
         }
     }
     
-    private Country criaCountry() {
-        Country country = new Country();
-        country.setCountry_id(ParseInt(iID.getText()));
-        country.setCountry(iName.getText());
-        country.setLast_update(new Timestamp((new Date()).getTime()));
-        return country;
+    private City criaCity() {
+        City city = new City();
+        city.setCity_id(ParseInt(icID.getText()));
+        city.setCity(icCity.getText());
+        city.setLast_update(new Timestamp((new Date()).getTime()));
+        return city;
     }
     /**
      * @param args the command line arguments
@@ -326,15 +349,15 @@ public class CityForm extends javax.swing.JFrame {
     private final String INS = "INSERT";
     private final String UPD = "UPDATE"; 
     
-    private CountryDAO countryDAO;
+    private CityDAO cityDAO;
     private String mode = INS;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel DisplayMode;
     private javax.swing.JButton bNovo;
     private javax.swing.JButton bRemover;
     private javax.swing.JButton bSalvar;
-    private javax.swing.JTextField iID;
-    private javax.swing.JTextField iName;
+    private javax.swing.JTextField icCity;
+    private javax.swing.JTextField icID;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
